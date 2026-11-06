@@ -5,6 +5,16 @@
 ||spclient.wg.spotify.com/ad-logic/$xhr,domain=://spotify.com
 ://spotify.com##+js(set, ://apple.com, undefined)
 ://spotify.com##+js(json-prune, slot_id)
+://spotify.com##+js(set, json.ads, undefined)
+://spotify.com##+js(set, json.ad_slots, undefined)
+! Bypass Spotify anti-adblock freeze loop
+||://spotify.com
+||audio-ak-spotify-com.akamaized.net/audio/*$badfilter
+
+! Inject scriptlet to mute/skip blocked ad elements (For compatible advanced blockers)
+open.spotify.com##+js(set, spotify.ads, undefined)
+open.spotify.com##+js(json-prune, ads)
+
 ! --- Spotify Web Player Ad Fix ---
 ||://spotify.com^$media,redirect=noopmp3,domain=://spotify.com
 ||://spotify.com^$media,redirect=noopmp4,domain=://spotify.com
