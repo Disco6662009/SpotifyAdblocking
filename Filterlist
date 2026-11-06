@@ -23,8 +23,6 @@
 @@||spclient.wg.spotify.com/bootstrap/*$domain=://spotify.com
 @@||://spotify.com^$domain=://spotify.com
 @@||://spotify.com^$domain=://spotify.com
-! Allow the event receiver to prevent the anti-adblock freeze loop
-@@||://spotify.com
 ||audio-sp-*.spotifycdn.com^$redirect=noopmp3
 ||scdn.co/mp3/$media,redirect=https://cdn.jsdelivr.net/gh/uBlockOrigin/uBOL-home/chromium/web_accessible_resources/noop-1s.mp4,domain=open.spotify.com
 sap.spotify.com
