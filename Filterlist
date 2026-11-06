@@ -1,5 +1,11 @@
 [Adblock Plus 2.0]
 ! Spotify
+! --- Spotify Web Player Ad Fix ---
+||://spotify.com^$media,redirect=noopmp3,domain=://spotify.com
+||://spotify.com^$media,redirect=noopmp4,domain=://spotify.com
+||://googlesyndication.com^$domain=://spotify.com
+||pubads.g.doubleclick.net^$domain=://spotify.com
+://spotify.com##+js(set, LocalStorage.ad-slot, null)
 ||adstudio-assets.scdn.co/*.mp3$media,~xhr,redirect=noop-1s.mp4,domain=open.spotify.com
 ||spotifycdn.com/audio/$media,~xhr,redirect=noop-1s.mp4,domain=open.spotify.com
 ||media-us.amillionads.com/*.mp3$media,~xhr,redirect=noop-1s.mp4,domain=spotify.com
