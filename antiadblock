@@ -1,47 +1,56 @@
 [Adblock Plus 2.0]
 
-! === 1. SCRIPTLET INJECTIONS (Defusing JavaScript Detection) ===
-! Neutralizes common "isAdblockActive" variable checks by forcing them to return false.
-*##+js(set, noopfn, true)
-*##+js(set, isAdblockerActive, false)
-*##+js(set, adblockDetected, false)
-*##+js(set, abp, false)
+! --- Defuse standard anti-adblock wrappers ---
+example.com##+js(set, acm, undefined)
+example.com##+js(set, BlockAdBlock, undefined)
+example.com##+js(noopfn, snpack)
 
-! Prevents scripts from detecting if standard banner variables are blocked
-*##+js(set, google_ad_client, true)
-*##+js(set, ga, noopfn)
+! --- Force bait variables to return true/false as expected by detectors ---
+example.org##+js(set, adsAllowed, true)
+example.org##+js(set, isAdBlockActive, false)
 
-! Aborts anti-adblock scripts trying to look for hidden bait elements
-*##+js(abort-current-inline-script, document.createElement, adblock)
-*##+js(abort-current-inline-script, window.addEventListener, abp)
-*##+js(abort-on-property-read, abBlockerDetected)
-*##+js(abort-on-property-read, Admiral)
+! --- Abort anti-adblock execution loops by targeting specific function properties ---
+example.net##+js(abort-current-inline-script, adblock, detector)
+example.net##+js(abort-on-property-read, _0x)
+example.net##+js(abort-on-property-write, checkAdBlock)
 
-! === 2. PROCEDURAL COSMETIC FILTERS (Bypassing Anti-Screen Overlays) ===
-! Removes full-screen blur/lock overlays triggered by adblock detection without breaking page scroll
-##body:has(div[class*="adblock-modal"]):style(overflow: auto !important; filter: none !important;)
-##div[class*="adblock-overlay"]
-##div[id*="ab-wrapper"]
-##iframe[src*="anti-adblock"]
+! --- Neutralize standard JSON/Fetch based detection ---
+example.com##+js(json-prune, data.isAdblockUser)
 
-! Targeted removal of aggressive paywall/adblock walls that dynamically shift classes
-##div:has-text(/Disable your AdBlocker/i)
-##div:has-text(/We notice you are using an ad blocker/i)
 
-! === 3. NETWORK STRICT BLOCKING (Stopping Detection Scripts at Source) ===
-! Blocks Admiral anti-adblock routing
-||admiral.com^$script,important
-||*.network/abp/*$script
+! --- Match overlay IDs or classes containing typical random/hash anti-adblock strings ---
+example.com##div[id*="adblock" i][style*="display: block"]
+example.com##div[class^="ab_"][class$="_notice"]
 
-! Blocks self-hosted or proxy-disguised anti-adblock scripts via regex matching common naming conventions
-/^https?:\/\/[a-z0-9]{8,}\.com\/[a-z0-9]{12}\/block\.js$/$script,domain=~google.com
+! --- Target and eliminate overlays that lock body scrolling ---
+example.org##body[style*="overflow: hidden"]:style(overflow: auto !important; position: static !important;)
+example.org##html[style*="overflow:hidden"]:style(overflow: auto !important;)
 
-! Blocks common detection paths and bait assets used to trigger the wall
-*/adblock-detector.js
-*/anti-adblock.js
-*/prebid-ads.js
-*/adsbygoogle.js$redirect=noopjs
+! --- Procedural cosmetic filter (Hides elements containing specific text like "Disable Adblock") ---
+example.net##div:has-text(/(Disable|Turn off|Detecting) Ad[ -]?Block/i)
 
-! === 4. CSP & DEFENSE OVERRIDES ===
-! Removes inline scripts that attempt to hard-lock the page if an ad server connection fails
-@@||*^$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval'
+! --- Force element visibility on structural containers often hidden by detection scripts ---
+example.com###main-content:style(display: block !important; visibility: visible !important; opacity: 1 !important;)
+
+! --- Block inline scripts containing anti-adblock keywords without breaking external JS ---
+||example.com$inline-script,contains=abblock|antiadblock|detectAdblock
+
+! --- Redirect specific "bait" scripts to empty resources rather than blocking (avoids triggering onerror) ---
+||://example.com
+||example.org/wp-content/plugins/adblock-detector/*$redirect=nooptext
+
+! --- Block specific script resources using exact regex mapping ---
+/^https?:\/\/[a-z0-9-]+\.example\.com\/[a-f0-9]{32}\.js$/$script,domain=example.com
+
+! --- Strict script execution blocking on tracking/detection endpoints ---
+||detect.example.net^$script,important,third-party
+
+! --- Target elements inside open Shadow roots ---
+example.com##div::shadow div.adblock-banner
+
+! --- Strip specific event listeners (like 'copy', 'contextmenu', or customized mouse leaves used for wall triggers) ---
+example.org##+js(remove-attr, class, [class*="adblock"])
+example.net##+js(addEventListener-defuser, remove)
+
+! --- Generate a dummy element that the script expects to find to verify ads are running ---
+example.com##+js(nowebrtc)
