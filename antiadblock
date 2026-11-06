@@ -1,0 +1,47 @@
+[Adblock Plus 2.0]
+
+! === 1. SCRIPTLET INJECTIONS (Defusing JavaScript Detection) ===
+! Neutralizes common "isAdblockActive" variable checks by forcing them to return false.
+*##+js(set, noopfn, true)
+*##+js(set, isAdblockerActive, false)
+*##+js(set, adblockDetected, false)
+*##+js(set, abp, false)
+
+! Prevents scripts from detecting if standard banner variables are blocked
+*##+js(set, google_ad_client, true)
+*##+js(set, ga, noopfn)
+
+! Aborts anti-adblock scripts trying to look for hidden bait elements
+*##+js(abort-current-inline-script, document.createElement, adblock)
+*##+js(abort-current-inline-script, window.addEventListener, abp)
+*##+js(abort-on-property-read, abBlockerDetected)
+*##+js(abort-on-property-read, Admiral)
+
+! === 2. PROCEDURAL COSMETIC FILTERS (Bypassing Anti-Screen Overlays) ===
+! Removes full-screen blur/lock overlays triggered by adblock detection without breaking page scroll
+##body:has(div[class*="adblock-modal"]):style(overflow: auto !important; filter: none !important;)
+##div[class*="adblock-overlay"]
+##div[id*="ab-wrapper"]
+##iframe[src*="anti-adblock"]
+
+! Targeted removal of aggressive paywall/adblock walls that dynamically shift classes
+##div:has-text(/Disable your AdBlocker/i)
+##div:has-text(/We notice you are using an ad blocker/i)
+
+! === 3. NETWORK STRICT BLOCKING (Stopping Detection Scripts at Source) ===
+! Blocks Admiral anti-adblock routing
+||admiral.com^$script,important
+||*.network/abp/*$script
+
+! Blocks self-hosted or proxy-disguised anti-adblock scripts via regex matching common naming conventions
+/^https?:\/\/[a-z0-9]{8,}\.com\/[a-z0-9]{12}\/block\.js$/$script,domain=~google.com
+
+! Blocks common detection paths and bait assets used to trigger the wall
+*/adblock-detector.js
+*/anti-adblock.js
+*/prebid-ads.js
+*/adsbygoogle.js$redirect=noopjs
+
+! === 4. CSP & DEFENSE OVERRIDES ===
+! Removes inline scripts that attempt to hard-lock the page if an ad server connection fails
+@@||*^$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval'
