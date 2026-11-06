@@ -1,0 +1,24 @@
+||://spotify.com^
+||audio-ak-spotify-com.akamaized.net^
+||://pubmatic.com^$domain=://spotify.co
+||doubleclick.net^$domain=://spotify.com
+||://spotify.com^
+||://spotify.com^
+||://spotify.com
+||://spotify.com
+://spotify.com###ads-container
+://spotify.com##div[aria-label="Advertisement"]
+://spotify.com##.main-leaderboard-container
+://spotify.com##a[href*="/premium"]
+://spotify.com##+js(set, sp.ads, undefined)
+||://spotify.com^$xmlhttprequest,domain=://spotify.com,badfilter
+/ad-logic/v*$domain=://spotify.com
+://spotify.com##div[data-testid="ad-house-banner"]
+://spotify.com##+js(set, Spotify.Metrics.enabled, false)
+@@||://spotify.com
+@@||://spotify.com^$domain=://spotify.com
+@@||spclient.wg.spotify.com/metadata/*$domain=://spotify.com
+@@||spclient.wg.spotify.com/track-playback/*$domain=://spotify.com
+@@||spclient.wg.spotify.com/bootstrap/*$domain=://spotify.com
+@@||://spotify.com^$domain=://spotify.com
+@@||://spotify.com^$domain=://spotify.com
